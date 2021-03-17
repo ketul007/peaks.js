@@ -105,10 +105,13 @@ define([
   PlayheadLayer.prototype.fitToView = function() {
     var height = this._view.getHeight();
 
-    this._playheadLine.points([0.5, 0, 0.5, height]);
+    //console.log(this._playheadLine);
+    //this._playheadLine.points([0.5, 0, 0.5, height]);
+    // this._playheadLine.x(0);
+    // this._playheadLine.y(0);
 
     if (this._playheadText) {
-      this._playheadText.y(12);
+      this._playheadText.y(20);
     }
   };
 
@@ -121,14 +124,68 @@ define([
 
   PlayheadLayer.prototype._createPlayhead = function(color) {
     // Create with default points, the real values are set in fitToView().
-    this._playheadLine = new Konva.Line({
+    var playheadGroup = new Konva.Group({
+      x: 0,
+      y: 0,
+      width: 10
+    });
+    var triangle = new Konva.RegularPolygon({
+      x: 0,
+      y: 0,
+      sides: 3,
+      radius: 10,
+      fill: 'orange',
+      stroke: 'orange',
+      strokeWidth: 0,
+      width: 10,
+      height: 10
+    });
+    var playheadLine = new Konva.Line({
       stroke:      color,
       strokeWidth: 1
     });
 
+    var customPlayHead = new Konva.Shape({
+      stroke: color,
+      strokeWidth: 2,
+      fill: color,
+      width: 26,
+      x: 0,
+      y: 0,
+      height: 200,
+      sceneFunc: function(context, shape) {
+        context.beginPath();
+        context.moveTo(13, 20);
+        context.lineTo(0, 0);
+        context.lineTo(26, 0);
+        context.lineTo(13, 20);
+        //context.lineTo(10, 5);
+        context.lineTo(13, 200);
+        //context.quadraticCurveTo(150, 100, 260, 170);
+        context.closePath();
+    
+        // (!) Konva specific method, it is very important
+        context.fillStrokeShape(shape);
+      }
+    });
+
+    playheadGroup.add(playheadLine);
+    playheadGroup.add(triangle);
+    // this._playheadLine = new Konva.Arrow({
+    //   stroke:      'orange',
+    //   strokeWidth: 2,
+    //   fill: 'orange',
+    //   pointerLength: 10,
+    //   pointerWidth: 10,
+    //   x: 0,
+    //   y: this._view.getHeight(),
+    //   rotation: 180
+    // });
+    this._playheadLine = customPlayHead;
     this._playheadGroup = new Konva.Group({
       x: 0,
       y: 0
+     // rotation: 180
     });
 
     this._playheadGroup.add(this._playheadLine);
@@ -141,7 +198,7 @@ define([
 
     // Create with default y, the real value is set in fitToView().
     this._playheadText = new Konva.Text({
-      x: 2,
+      x: 15,
       y: 0,
       text: text,
       fontSize: this._playheadFontSize,
@@ -202,11 +259,11 @@ define([
 
         this._playheadText.setText(text);
 
-        if (playheadTextWidth + playheadX > width - 2) {
-          this._playheadText.setX(-playheadTextWidth - 2);
+        if (playheadTextWidth + playheadX > width - 15) {
+          this._playheadText.setX(-playheadTextWidth - 15);
         }
         else if (playheadTextWidth + playheadX < width) {
-          this._playheadText.setX(2);
+          this._playheadText.setX(15);
         }
       }
 

@@ -197,12 +197,12 @@ define([
       /**
        * Colour of the play head
        */
-      playheadColor:         Colors.black,
+      playheadColor:         Colors.orange,
 
       /**
        * Colour of the play head text
        */
-      playheadTextColor:     Colors.gray,
+      playheadTextColor:     Colors.orange,
 
       /**
        * Precision of time label for play head and point/segment markers
